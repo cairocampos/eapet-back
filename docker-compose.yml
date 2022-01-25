@@ -1,0 +1,49 @@
+version: "3"
+services:
+  eapet-app:
+    image: ambientum/php:8.1-nginx
+    container_name: eapet_app
+    # restart: always
+    environment:
+        XDEBUG_ENABLED: "true"
+    ports:
+      - "80:8080"
+      - "8083:8083"
+    volumes:
+      - ./:/var/www/app
+      - ./.docker/xdebug.ini:/etc/php8/conf.d/xdebug.ini
+    depends_on:
+      - eapet-mysql
+      - eapet-redis
+
+  eapet-mysql:
+    image: mysql
+    container_name: eapet_mysql
+    command: ---default-authentication-plugin=mysql_native_password
+    # restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./.docker/dbdata:/var/lib/mysql"
+    environment:
+      MYSQL_DATABASE: eapet
+      MYSQL_ROOT_PASSWORD: root
+
+  # eapet-redis:
+  #   image: redis:alpine
+  #   container_name: eapet_redis
+  #   restart: always
+  #   expose:
+  #     - 6379
+
+  # Laravel Queues
+  # eapet-horizon:
+  #   image: ambientum/php:8.1
+  #   container_name: eapet_horizon
+  #   restart: always
+  #   command: php artisan horizon
+  #   volumes:
+  #     - .:/var/www/app
+  #   links:
+  #     - eapet-mysql
+  #     - eapet-redis
