@@ -2,7 +2,10 @@
 
 namespace App\Exceptions;
 
+use App\Services\Providers\HttpStatus;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -37,5 +40,30 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        $statusCodes = [HttpStatus::HTTP_INTERNAL_SERVER_ERROR, HttpStatus::HTTP_NOT_FOUND];
+        $messages = [
+            500 => 'Algo inesperado aconteceu.',
+            404 => 'Registro não encontado.'
+        ];
+
+        if($exception instanceof ModelNotFoundException) {
+            return response()->json([
+                'message' => $messages[HttpStatus::HTTP_NOT_FOUND]
+            ], HttpStatus::HTTP_NOT_FOUND);
+        }
+
+        if($request->expectsJson() && method_exists($exception, 'getCode') && in_array($exception->getCode(), $statusCodes)) {            
+            if(in_array($exception->getCode(), array_keys($messages))) {
+                return response()->json([
+                    'message' => $messages[$exception->getCode()]
+                ], $exception->getCode());
+            }
+        }
+
+        return parent::render($request, $exception);
     }
 }

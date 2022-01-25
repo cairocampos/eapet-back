@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\HttpException;
 use App\Http\Requests\LoginRequest;
 use App\Services\AuthService;
 use App\Services\Providers\HttpStatus;

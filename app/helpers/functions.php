@@ -1,19 +1,7 @@
 <?php
 
-use App\Exceptions\WarningException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
-
-define('ATIVO', 1);
-define('INATIVO', 0);
-
-if(!function_exists('warning_exception')) {
-    function warning_exception(\Exception $e) {
-        return response()->json([
-            'message' => $e->getMessage()
-        ], $e->getCode());
-    }
-}
 
 if(!function_exists('error_exception')) {
     function error_exception(\Exception $e) {
@@ -37,15 +25,7 @@ if(!function_exists('notfound_exception')) {
 
 if(!function_exists('makeException')) {
     function makeException(\Exception $e) {
-        if($e instanceof WarningException) {
-            return warning_exception($e);
-        }
-
-        if($e instanceof ModelNotFoundException) {
-            return notfound_exception($e);
-        }
-
-        return error_exception($e);
+        throw $e;
     }
 }
 
@@ -104,6 +84,10 @@ function formataCep($cep) {
     return preg_replace("/^([0-9]{5})([0-9]{3})$/", "$1-$2", $cep);
 }
 
+function formataCpf($cpf) {
+    return preg_replace("/^([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})$/", "$1.$2.$3-$4", $cpf);
+}
+
 /**
  * Trasnforma um valor em reais para um valor float.
  *
@@ -143,7 +127,7 @@ function tirarAcentos($string){
         "/(ç)/",
         "/(Ç)/"
     ]
-    ,explode(" ","a A e E i I o O u U n N ç Ç"),
+    ,explode(" ","a A e E i I o O u U n N c C"),
     $string);
 }
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBreedsTable extends Migration
+class CreateCustomersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,16 @@ class CreateBreedsTable extends Migration
      */
     public function up()
     {
-        Schema::create('breeds', function (Blueprint $table) {
+        Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('specie_id');
             $table->string('name');
-            $table->string('name_search');
-            $table->boolean('status')->default(true);
+            $table->string('email')->nullable();
+            $table->char('cpf', 11)->nullable();
+            $table->enum('gender', ['M', 'F'])->nullable();
+            $table->boolean('status')->default(1);
+            $table->date('birthday')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
-
-            $table->foreign('specie_id')->references('id')->on('species');
         });
     }
 
@@ -32,6 +33,6 @@ class CreateBreedsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('breeds');
+        Schema::dropIfExists('customers');
     }
 }

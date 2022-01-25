@@ -17,6 +17,7 @@ class CreateSpeciesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('name_search');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
