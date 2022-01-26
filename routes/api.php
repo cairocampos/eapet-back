@@ -12,6 +12,7 @@ use App\Http\Controllers\{
     CustomerAddressController,
     CustomerContactController,
     CustomerController,
+    CustomerPetController,
     FornecedorController,
     PelageController,
     PerfilController,
@@ -48,16 +49,29 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('customers', CustomerController::class);
 
-    Route::prefix('customers')->group(function () {
-        Route::get('{customer}/addresses', [CustomerAddressController::class, 'index']);
-        Route::get('{customer}/addresses/{id}', [CustomerAddressController::class, 'show']);
-        Route::delete('{customer}/addresses/{id}', [CustomerAddressController::class, 'destroy']);
-        Route::post('{customer}/addresses', [CustomerAddressController::class, 'store']);
+    Route::prefix('customers/{customer}')->group(function () {
 
-        Route::get('{customer}/contacts', [CustomerContactController::class, 'index']);
-        Route::get('{customer}/contacts/{id}', [CustomerContactController::class, 'show']);
-        Route::delete('{customer}/contacts/{id}', [CustomerContactController::class, 'destroy']);
-        Route::post('{customer}/contacts', [CustomerContactController::class, 'store']);
+        Route::prefix('addresses')->group(function() {
+            Route::get('/', [CustomerAddressController::class, 'index']);
+            Route::post('/', [CustomerAddressController::class, 'store']);
+            Route::get('{id}', [CustomerAddressController::class, 'show']);
+            Route::delete('{id}', [CustomerAddressController::class, 'destroy']);
+        });
+
+        Route::prefix('contacts')->group(function() {
+            Route::get('/', [CustomerContactController::class, 'index']);
+            Route::post('/', [CustomerContactController::class, 'store']);
+            Route::get('{id}', [CustomerContactController::class, 'show']);
+            Route::delete('{id}', [CustomerContactController::class, 'destroy']);
+        });
+
+        Route::prefix('pets')->group(function() {
+            Route::get('/', [CustomerPetController::class, 'index']);
+            Route::post('/', [CustomerPetController::class, 'store']);
+            Route::get('{id}', [CustomerPetController::class, 'show']);
+            Route::delete('{id}', [CustomerPetController::class, 'destroy']);
+            Route::put('{id}', [CustomerPetController::class, 'update']);
+        });
     });
 
     Route::apiResource('pelages', PelageController::class);

@@ -21,6 +21,11 @@ class Customer extends Model
         return $this->hasMany(CustomerContact::class);
     }
 
+    public function pets()
+    {
+        return $this->hasMany(Pet::class);
+    }
+
     public function setCpfAttribute($value)
     {
         $this->attributes['cpf'] = apenasNumeros($value);

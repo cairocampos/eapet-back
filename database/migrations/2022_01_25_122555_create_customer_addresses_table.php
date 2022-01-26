@@ -23,6 +23,7 @@ class CreateCustomerAddressesTable extends Migration
             $table->string('complement')->nullable();
             $table->string('city')->default('GOVERNADOR VALADARES');
             $table->char('state', 2)->default('MG');
+            $table->boolean('default')->default(false);
             $table->boolean('status')->default(false);
             $table->timestamps();
 

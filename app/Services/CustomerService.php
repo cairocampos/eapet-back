@@ -40,8 +40,10 @@ class CustomerService
             if(!empty($params['contacts']))
                 $customer->contacts()->createMany($params['contacts']);
 
-            if(!empty($params['address']))
+            if(!empty($params['address'])) {
+                $params['address']['default'] = true;
                 $customer->addresses()->create($params['address']);
+            }
 
             DB::commit();
             return response()->json(new CustomerResource($customer), HttpStatus::HTTP_CREATED);
